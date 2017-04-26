@@ -96,5 +96,5 @@ if __name__ == '__main__':
     S = yellowtrips.cartesian(citibiketrips).mapPartitions(filter_pair).count()
     
     ## print 10 blank line to find result at the command line window
-    print '\n'*10            
+    #print '\n'*10            
     print S
