@@ -60,6 +60,7 @@ if __name__ == '__main__':
                 delta = t - yt_
                 if delta.seconds < 600:
                     S += 1
+    print '\n'*10
     print S
     with open('tmp.txt', 'wb') as fo:
         fo.write(S)
