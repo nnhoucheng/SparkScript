@@ -86,12 +86,12 @@ if __name__ == '__main__':
     yellow = sc.textFile('/tmp/yellow.csv.gz')
     citibike = sc.textFile('/tmp/citibike.csv')
     
-    yellowtrips = yellow.mapPartitionsWithIndex(filter_yellow)
-                        .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S'))
+    yellowtrips = yellow.mapPartitionsWithIndex(filter_yellow) \
+                        .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S')) \
                         .collect()
             
-    citibiketrips = citibike.mapPartitionsWithIndex(filter_citibike)
-                            .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S'))
+    citibiketrips = citibike.mapPartitionsWithIndex(filter_citibike) \
+                            .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S')) \
                             .collect()
     
     # Calculate the matched pairs
