@@ -87,12 +87,10 @@ if __name__ == '__main__':
     citibike = sc.textFile('/tmp/citibike.csv')
     
     yellowtrips = yellow.mapPartitionsWithIndex(filter_yellow) \
-                        .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S')) \
-                        .collect()
+                        .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S'))
             
     citibiketrips = citibike.mapPartitionsWithIndex(filter_citibike) \
-                            .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S')) \
-                            .collect()
+                            .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S'))
     
     # Calculate the matched pairs
     S = yellowtrips.cartesian(citibiketrips).mapPartitions(filter_pair).count()
