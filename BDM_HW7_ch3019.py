@@ -51,10 +51,10 @@ if __name__ == '__main__':
     citibike = sc.textFile('/tmp/citibike.csv')
     yellowtrips = yellow.mapPartitionsWithIndex(filter_yellow).collect()
     trips = citibike.mapPartitionsWithIndex(filter_trip).collect()
-    trips = map(lambda x: dt.datetime.strptime(x, '%Y-%m-%d %H:%M:%S'), trips)
+    trips = map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S'), trips)
     S = 0
     for yt in yellowtrips:
-        yt_ = dt.datetime.strptime(yt, '%Y-%m-%d %H:%M:%S')
+        yt_ = dt.strptime(yt, '%Y-%m-%d %H:%M:%S')
         for t in trips:
             if t > yt_:
                 delta = t - yt_
