@@ -5,5 +5,4 @@ if __name__=='__main__':
     f = sc.textFile('/tmp/citibike.csv', use_unicode=False).cache()
     with open('tmp.txt', 'wb') as fo:
         fo.write("first line\n")
-        for i,c in enumerate(f.first().split(',')):
-            fo.write("{} : {}\n".format(i,c)) 
+        fo.write("{}".format(f.count()))
