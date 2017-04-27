@@ -34,7 +34,7 @@ def filter_yellow(partId, list_of_records):
     sla = 40.73901691 # latitude of the station
     slon = -74.00263761 # longitude of the station
     
-    if partId==0: 
+    if partId == 0: 
         list_of_records.next() # skipping the first line
         
     reader = csv.reader(list_of_records)
@@ -59,7 +59,7 @@ def filter_citibike(partId, list_of_records):
     Then yield the potential citibike trip start time.
     '''
     import csv
-    if partId==0: 
+    if partId == 0: 
         list_of_records.next() # skipping the first line
         
     reader = csv.reader(list_of_records)
