@@ -28,6 +28,7 @@ def filter_yellow(partId, list_of_records):
     '''
     Filter yellow taxi trips not within 0.25 miles of the station "Greenwich Ave & 8 Ave" 
                                  or at "February 1st 2015"
+    Then yield the potential yellow taxi trip dropoff time.
     '''
     import csv
     sla = 40.73901691 # latitude of the station
@@ -55,6 +56,7 @@ def filter_citibike(partId, list_of_records):
     '''
     Filter citibike trips not start at the station "Greenwich Ave & 8 Ave" 
                               or at "February 1st 2015"
+    Then yield the potential citibike trip start time.
     '''
     import csv
     if partId==0: 
@@ -63,6 +65,7 @@ def filter_citibike(partId, list_of_records):
     reader = csv.reader(list_of_records)
     for row in reader:
         day_time = row[3].split('+')[0] # uniform the time format to yyyy-mm-dd hh:mm:ss
+        ## Filter trips not start at the station or not at "February 1st 2015"
         if row[6] == 'Greenwich Ave & 8 Ave' and day_time.split(' ')[0] == '2015-02-01':
             yield (day_time)
 
@@ -74,27 +77,29 @@ def filter_pair(list_of_records):
     '''
     for pair in list_of_records:
         (yt, ct) = pair
-        if ct > yt:
-            if (ct - yt).seconds <= 600: # 10 mins equals 600 seconds
+        if ct > yt: # citibike trip start after taxi trip end
+            if (ct - yt).seconds <= 600: # with in 10 mins/600 seconds
                 yield (1)
    
     
 if __name__ == '__main__':
     sc = SparkContext()
     
-    # Read the data
+    # Read the data from HDFS /tmp folder
     yellow = sc.textFile('/tmp/yellow.csv.gz')
     citibike = sc.textFile('/tmp/citibike.csv')
     
+    # Get potential yellow taxi trips' dropoff time and convert to datetime
     yellowtrips = yellow.mapPartitionsWithIndex(filter_yellow) \
                         .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S'))
-            
+    
+    # Get potential citibike trips' dropoff time and convert to datetime
     citibiketrips = citibike.mapPartitionsWithIndex(filter_citibike) \
                             .map(lambda x: dt.strptime(x, '%Y-%m-%d %H:%M:%S'))
     
-    # Calculate the matched pairs
+    # Generate all pairs and count the matched pairs
     S = yellowtrips.cartesian(citibiketrips).mapPartitions(filter_pair).count()
     
-    ## print 10 blank line to find result at the command line window
+    ## print 10 blank line to find result at the dumbo output window
     #print '\n'*10            
     print S
